@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-roles-in-roles-table
+      author: fetis_off
+      changes:
+        - insert:
+            tableName: roles
+            schemaName: core_user
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: role
+                  value: ROLE_ADMIN
+        - insert:
+            tableName: roles
+            schemaName: core_user
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: role
+                  value: ROLE_USER

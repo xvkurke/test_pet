@@ -1,0 +1,60 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-expenses-table
+      author: "exc3pt1ondev"
+      changes:
+        - createTable:
+            tableName: "expenses"
+            schemaName: "core_tracker"
+            columns:
+              - column:
+                  name: "id"
+                  type: "bigserial"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "amount"
+                  type: "double precision"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "currency"
+                  type: "varchar(24)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "description"
+                  type: "varchar(255)"
+              - column:
+                  name: "category_id"
+                  type: "bigint"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "user_id"
+                  type: "bigint"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "create_date"
+                  type: "timestamp"
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: "CURRENT_TIMESTAMP"
+        - addForeignKeyConstraint:
+            baseTableName: "expenses"
+            baseColumnNames: "user_id"
+            baseTableSchemaName: "core_tracker"
+            referencedTableName: "users"
+            referencedTableSchemaName: "core_user"
+            referencedColumnNames: "id"
+            constraintName: "fk_expenses_user_id"
+        - addForeignKeyConstraint:
+            baseTableName: "expenses"
+            baseColumnNames: "category_id"
+            baseTableSchemaName: "core_tracker"
+            referencedTableName: "categories"
+            referencedTableSchemaName: "core_tracker"
+            referencedColumnNames: "id"
+            constraintName: "fk_expenses_category_id"

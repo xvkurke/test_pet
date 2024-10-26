@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: exc3pt1ondev
+      changes:
+        - sql:
+            sql: "CREATE SCHEMA IF NOT EXISTS core;"
