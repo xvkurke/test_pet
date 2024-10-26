@@ -1,4 +1,4 @@
-name: Docker CI with Gradle
+name: Build and push to docker
 
 on:
   push:
@@ -39,3 +39,18 @@ jobs:
         with:
           name: jar-file
           path: the-lynxie-web-api.jar
+      
+      - name: Login to Docker
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+        # Logs into Docker Hub using credentials stored in GitHub Secrets, allowing for subsequent image push actions.
+              
+      - name: Build and Push Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: /Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/lynxie-api-dev:latest
