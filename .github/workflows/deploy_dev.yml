@@ -1,56 +1,43 @@
-name: Build and push to docker
+name: Docker Build and Push
 
 on:
   push:
-    branches: [ "main" ]
-
-permissions:
-  contents: read
+    branches:
+      - main  # Trigger this action when pushing to the main branch
+  pull_request:
+    branches:
+      - main  # Optionally, run this action on pull requests to the main branch
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up JDK (if you need to build the JAR file first)
+      - name: Set up JDK 22
+        uses: actions/setup-java@v3
         with:
-          distribution: temurin
-          java-version: 22
-          
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-      
-      - name: Execute Gradle build
-        run: |
-          chmod +x ./gradlew
-          ./gradlew bootJar          
+          java-version: '22'
 
-      - name: Execute Gradle build
-        run: |
-          chmod +x ./gradlew
-          ./gradlew clean build          
+      # Step 3: Build the JAR file (if not already built)
+      - name: Build with Gradle
+        run: ./gradlew build
 
-      - name: Copy Jar file
-        run: mv ./build/libs/the-lynxie-web-api.jar ./the-lynxie-web-api.jar
-
-      - uses: actions/upload-artifact@master
-        with:
-          name: jar-file
-          path: the-lynxie-web-api.jar
-      
-      - name: Login to Docker
+      # Step 4: Log in to Docker Hub (add secrets in GitHub settings)
+      - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-        # Logs into Docker Hub using credentials stored in GitHub Secrets, allowing for subsequent image push actions.
-              
-      - name: Build and Push Image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/lynxie-api-dev:latest
+
+      # Step 5: Build the Docker image
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/the-lynxie-web-api:latest .
+
+      # Step 6: Push the Docker image to Docker Hub
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/the-lynxie-web-api:latest
