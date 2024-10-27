@@ -33,7 +33,7 @@ jobs:
           ./gradlew clean build          
 
       - name: Copy Jar file
-        run: mv ./build/libs/the-lynxie-web-api.jar the-lynxie-web-api.jar
+        run: mv ./build/libs/the-lynxie-web-api.jar ./the-lynxie-web-api.jar
 
       - uses: actions/upload-artifact@master
         with:
