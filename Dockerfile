@@ -2,7 +2,7 @@
 FROM openjdk:22-jdk-slim
 
 # Copy the built JAR file
-#COPY ./build/libs/the-lynxie-web-api.jar ./the-lynxie-web-api.jar
+COPY ./build/libs/the-lynxie-web-api.jar ./the-lynxie-web-api.jar
 
 # Expose the application port
 EXPOSE 8080
