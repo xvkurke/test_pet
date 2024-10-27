@@ -22,6 +22,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '22'
+          distribution: 'adopt'
 
       # Step 3: Build the JAR file (if not already built)
       - name: Build with Gradle
@@ -36,8 +37,8 @@ jobs:
 
       # Step 5: Build the Docker image
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/the-lynxie-web-api:latest .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/the-lynxie-web-api-dev:latest .
 
       # Step 6: Push the Docker image to Docker Hub
       - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/the-lynxie-web-api:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/the-lynxie-web-api-dev:latest
