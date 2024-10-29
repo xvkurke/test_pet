@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '22'
-          distribution: 'adopt'  # Options: 'adopt', 'zulu', 'temurin', 'corretto', etc.
+          distribution: 'adopt'  # Options: 'adopt', 'zulu', 'temurin', 'corretto', etc
 
       # Step 3: Grant execute permission to gradlew
       - name: Make gradlew executable
