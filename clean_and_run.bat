@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-REM Clean and build the project
+REM Clean and build the project.
 call gradlew.bat clean
 call gradlew.bat build
 
