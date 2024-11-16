@@ -38,10 +38,10 @@ jobs:
           echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> .env
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/lynxie-api-main:latest .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/lynxie-api-master:latest .
 
       - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/lynxie-api-main:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/lynxie-api-master:latest
 
       - name: Deploy to Server
         uses: appleboy/ssh-action@v0.1.8
@@ -50,6 +50,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /path/to/your/project
-            docker compose pull app
-            docker compose up -d --no-deps app
+            cd /root/tmp/api-master
+            docker compose pull olhoper/lynxie-api-master:latest
+            docker compose up -d
