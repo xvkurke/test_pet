@@ -19,9 +19,6 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew build
-
       - name: Create .env file
         run: |
           echo "# Spring profile" > .env
@@ -50,6 +47,9 @@ jobs:
           echo "# JWT configuration" >> .env
           echo "JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }}" >> .env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+
+      - name: Build with Gradle
+        run: ./gradlew build
 
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/lynxie-api-master:latest .
