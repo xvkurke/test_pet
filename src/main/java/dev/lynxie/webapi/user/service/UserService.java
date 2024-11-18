@@ -5,8 +5,9 @@ import dev.lynxie.webapi.user.dto.UserRegistrationRequestDto;
 import dev.lynxie.webapi.user.dto.UserResponseDto;
 import dev.lynxie.webapi.user.dto.UserUpdateRequestDto;
 import dev.lynxie.webapi.user.model.User;
-import java.util.Optional;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
 
 public interface UserService {
     UserResponseDto register(UserRegistrationRequestDto requestDto);
@@ -14,6 +15,8 @@ public interface UserService {
     ListResponseDto<UserResponseDto> findAll(Pageable pageable);
 
     Optional<User> findById(Long id);
+
+    Optional<User> findByEmail(String email);
 
     void deleteById(Long id);
 

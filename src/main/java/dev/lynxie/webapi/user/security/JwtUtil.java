@@ -9,23 +9,30 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Function;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
+    private final String AUTH_COOKIE_NAME = "authToken";
     private final SecretKey secret;
 
     @Value("${jwt.expiration}")
-    private long expiration;
-
+    private Integer expiration;
+    
     public JwtUtil(@Value("${jwt.secret}") String secretString) {
         secret = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
     }
+    
+    public String getAuthCookieName() {
+        return AUTH_COOKIE_NAME;
+    }
 
-    public String generateToken(String username) {
+    public String generateToken(String email) {
         return Jwts.builder()
-                .subject(username)
+                .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secret)
@@ -43,11 +50,11 @@ public class JwtUtil {
             throw new JwtException("Expired or invalid JWT token");
         }
     }
-
-    public String getUsername(String token) {
+    
+    public String getEmail(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
-
+    
     private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = Jwts.parser()
                 .verifyWith(secret)
@@ -55,5 +62,22 @@ public class JwtUtil {
                 .parseSignedClaims(token)
                 .getPayload();
         return claimsResolver.apply(claims);
+    }
+
+    public Cookie createCookie(String token) {
+        Cookie cookie = new Cookie(AUTH_COOKIE_NAME, token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setSecure(false); // NOTE: true - if `https://`
+        cookie.setMaxAge(expiration / 1000); // NOTE: ms -> sec
+        return cookie;
+    }
+
+    public void clearAuthTokenCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie(AUTH_COOKIE_NAME, "");
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // Delete the cookie
+        response.addCookie(cookie);
     }
 }

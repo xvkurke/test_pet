@@ -1,18 +1,15 @@
 package dev.lynxie.webapi.user.model;
 
-import dev.lynxie.webapi.tracker.model.Category;
-import dev.lynxie.webapi.tracker.model.Expense;
 import jakarta.persistence.*;
-import java.util.Collection;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import java.util.HashSet;
-import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -44,12 +41,6 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<UserRole> roles = new HashSet<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Expense> expenses;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Category> categories;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

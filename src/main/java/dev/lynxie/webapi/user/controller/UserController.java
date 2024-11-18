@@ -50,7 +50,7 @@ public class UserController extends BaseController {
     }
     
     @DeleteMapping(ControllerRoutes.USER_DELETE)
-    public ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable("id") Long id) {
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

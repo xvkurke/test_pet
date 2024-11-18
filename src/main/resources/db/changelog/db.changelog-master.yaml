@@ -18,7 +18,5 @@ databaseChangeLog:
   - include:
       file: db/changelog/1.0.0/1.7-insert-relation-users-roles.yaml
   - include:
-      file: db/changelog/1.0.0/1.8-create-categories-table-changelog.yaml
-  - include:
-      file: db/changelog/1.0.0/1.9-create-expenses-table-changelog.yaml
+      file: db/changelog/1.0.0/1.8-create-documents-table-changelog.yaml
   

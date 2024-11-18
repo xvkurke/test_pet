@@ -1,25 +1,25 @@
 package dev.lynxie.webapi.user.service.impl;
 
 import dev.lynxie.webapi.master.dto.ListResponseDto;
+import dev.lynxie.webapi.master.exception.EntityNotFoundException;
 import dev.lynxie.webapi.user.dto.UserRegistrationRequestDto;
 import dev.lynxie.webapi.user.dto.UserResponseDto;
 import dev.lynxie.webapi.user.dto.UserUpdateRequestDto;
-import dev.lynxie.webapi.master.exception.EntityNotFoundException;
 import dev.lynxie.webapi.user.exception.RegistrationException;
 import dev.lynxie.webapi.user.mapper.UserMapper;
 import dev.lynxie.webapi.user.model.User;
 import dev.lynxie.webapi.user.model.UserRole;
 import dev.lynxie.webapi.user.repository.UserRepository;
 import dev.lynxie.webapi.user.repository.UserRoleRepository;
-import java.util.Optional;
-import java.util.Set;
-
 import dev.lynxie.webapi.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -55,6 +55,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Override
