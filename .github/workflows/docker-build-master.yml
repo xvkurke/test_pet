@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up JDK 22 (AdoptOpenJDK)
+      - name: Set up JDK 22 (AdoptOpenJDK).
         uses: actions/setup-java@v3
         with:
           java-version: '22'
