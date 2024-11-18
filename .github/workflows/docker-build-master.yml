@@ -18,11 +18,11 @@ jobs:
         run: chmod +x ./gradlew
       - name: Build with Gradle
         run: ./gradlew build
-      - name: Create .env file for main
-        run: |
-          echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL_MASTER }}" > .env
-          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> .env
-          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> .env
+      #- name: Create .env file for main
+      #  run: |
+      #    echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL_MASTER }}" > .env
+      #    echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> .env
+      #    echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> .env
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/lynxie-api-master:latest .
       - name: Deploy and Run Docker Container
