@@ -1,0 +1,32 @@
+name: Docker Build, Push, and Deploy for Main
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up JDK 22 (AdoptOpenJDK).
+        uses: actions/setup-java@v3
+        with:
+          java-version: '22'
+          distribution: 'adopt'
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      - name: Build with Gradle
+        run: ./gradlew build
+      - name: Create .env file for main
+        run: |
+          echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL_MASTER }}" > .env
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> .env
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> .env
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/lynxie-api-master:latest .
+      - name: Deploy and Run Docker Container
+        run: |
+          docker compose down
+          docker container prune
+          docker compose up -d
