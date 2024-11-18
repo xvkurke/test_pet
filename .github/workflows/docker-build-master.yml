@@ -1,4 +1,4 @@
-name: Docker Build, Push, and Deploy for Main.
+name: Docker Build, Push, and Deploy for Main
 on:
   push:
     branches:
@@ -9,26 +9,55 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Set up JDK 22 (AdoptOpenJDK).
+
+      - name: Set up JDK 22 (AdoptOpenJDK)
         uses: actions/setup-java@v3
         with:
           java-version: '22'
           distribution: 'adopt'
+
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+
       - name: Build with Gradle
         run: ./gradlew build
-      #- name: Create .env file for main
-      #  run: |
-      #    echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL_MASTER }}" > .env
-      #    echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> .env
-      #    echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> .env
+
+      - name: Create .env file
+        run: |
+          echo "# Spring profile" > .env
+          echo "SPRING_PROFILES_ACTIVE=" >> .env
+          
+          echo "# Spring application" >> .env
+          echo "SPRING_APPLICATION_NAME=the-lynxie-web-api" >> .env
+          
+          echo "# Database configuration" >> .env
+          echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL_MASTER }}" >> .env
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> .env
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> .env
+          echo "SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver" >> .env
+          
+          echo "# Liquibase configuration" >> .env
+          echo "LIQUIBASE_CHANGELOG=classpath:db/changelog/db.changelog-master.yaml" >> .env
+          echo "LIQUIBASE_ENABLED=true" >> .env
+          
+          echo "# Java Persistence API (JPA)" >> .env
+          echo "JPA_HIBERNATE_DDL_AUTO=validate" >> .env
+          echo "JPA_SHOW_SQL=true" >> .env
+          echo "JPA_OPEN_IN_VIEW=false" >> .env
+          echo "JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect" >> .env
+          echo "JPA_PROPERTIES_JDBC_TIMEZONE=UTC+3" >> .env
+          
+          echo "# JWT configuration" >> .env
+          echo "JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/lynxie-api-master:latest .
+
       - name: Deploy and Run Docker Container
         run: |
-          
-          docker container prune
+          # Очищуємо існуючі контейнери
+          docker container prune -f
           
           docker ps -q --filter "ancestor=the-lynxie-web-api-app:latest" | xargs -r docker stop
           docker ps -aq --filter "ancestor=the-lynxie-web-api-app:latest" | xargs -r docker rm
