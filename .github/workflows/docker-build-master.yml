@@ -27,6 +27,14 @@ jobs:
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/lynxie-api-master:latest .
       - name: Deploy and Run Docker Container
         run: |
-          docker compose down
+          
           docker container prune
+          
+          docker ps -q --filter "ancestor=the-lynxie-web-api-app:latest" | xargs -r docker stop
+          docker ps -aq --filter "ancestor=the-lynxie-web-api-app:latest" | xargs -r docker rm
+          
+          # Видаляємо старі образи
+          docker images "the-lynxie-web-api-app:latest" --format "{{.ID}}" | xargs -r docker rmi
+          
+          # Запускаємо новий контейнер
           docker compose up -d
