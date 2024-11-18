@@ -1,0 +1,81 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-documents-table
+      author: "exc3pt1ondev"
+      changes:
+        - createTable:
+            tableName: "documents"
+            columns:
+              - column:
+                  name: "id"
+                  type: "BIGINT"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "key"
+                  type: "VARCHAR(255)"
+              - column:
+                  name: "title"
+                  type: "VARCHAR(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "is_archived"
+                  type: "BOOLEAN"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "content"
+                  type: "TEXT"
+              - column:
+                  name: "cover_image"
+                  type: "VARCHAR(255)"
+              - column:
+                  name: "icon"
+                  type: "VARCHAR(255)"
+              - column:
+                  name: "is_published"
+                  type: "BOOLEAN"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "parent_document_id"
+                  type: "BIGINT"
+              - column:
+                  name: "user_id"
+                  type: "BIGINT"
+
+        - addForeignKeyConstraint:
+            baseTableName: "documents"
+            baseColumnNames: "parent_document_id"
+            referencedTableName: "documents"
+            referencedColumnNames: "id"
+            constraintName: "fk_documents_parent_document_id"
+#            onDelete: "CASCADE"
+
+        - addForeignKeyConstraint:
+            baseTableName: "documents"
+            baseColumnNames: "user_id"
+            referencedTableSchemaName: "core_user"
+            referencedTableName: "users"
+            referencedColumnNames: "id"
+            constraintName: "fk_documents_user_id"
+            onDelete: "CASCADE"
+
+        - createIndex:
+            indexName: "by_user"
+            tableName: "documents"
+            columns:
+              - column:
+                  name: "user_id"
+
+        - createIndex:
+            indexName: "by_user_parent"
+            tableName: "documents"
+            columns:
+              - column:
+                  name: "user_id"
+              - column:
+                  name: "parent_document_id"
